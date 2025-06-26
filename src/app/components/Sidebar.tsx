@@ -4,14 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Home,
   Star,
-  Folder,
-  Settings,
   Plus,
   ChevronRight,
   Bookmark,
   Archive,
   Tag,
 } from "lucide-react";
+
 import clsx from "clsx";
 
 const navItems = [
