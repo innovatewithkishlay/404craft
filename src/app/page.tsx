@@ -5,8 +5,8 @@ import SearchFilterBar from "./components/SearchFilterBar";
 import LinkCard from "./components/LinkCard";
 import { motion } from "framer-motion";
 
-interface Link {
-  id: number;
+export interface Link {
+  id: string;
   url: string;
   title: string;
   description: string;
@@ -16,77 +16,12 @@ interface Link {
   favicon: string;
 }
 
-const mockLinks: Link[] = [
-  {
-    id: 1,
-    url: "https://github.com/vercel/next.js",
-    title: "Next.js – The React Framework",
-    description:
-      "Production-grade React applications with server-side rendering and static site generation.",
-    tags: ["react", "framework", "ssr"],
-    folder: "Dev Tools",
-    starred: true,
-    favicon: "/nextjs.png",
-  },
-  {
-    id: 2,
-    url: "https://tailwindcss.com",
-    title: "Tailwind CSS - Rapid UI Development",
-    description:
-      "A utility-first CSS framework packed with classes to build any design.",
-    tags: ["css", "ui", "design"],
-    folder: "Frontend",
-    starred: false,
-    favicon: "/tailwind.png",
-  },
-  {
-    id: 3,
-    url: "https://ui.shadcn.com",
-    title: "shadcn/ui - Beautiful Components",
-    description: "Re-usable components built using Radix UI and Tailwind CSS.",
-    tags: ["components", "ui", "react"],
-    folder: "UI Libraries",
-    starred: true,
-    favicon: "/shadcn.png",
-  },
-  {
-    id: 4,
-    url: "https://vercel.com",
-    title: "Vercel - Frontend Cloud Platform",
-    description:
-      "Develop, preview, and ship your projects with the best frontend developer experience.",
-    tags: ["hosting", "deployment", "serverless"],
-    folder: "DevOps",
-    starred: false,
-    favicon: "/vercel.png",
-  },
-  {
-    id: 5,
-    url: "https://react.dev",
-    title: "React - JavaScript Library",
-    description: "A JavaScript library for building user interfaces.",
-    tags: ["javascript", "ui", "library"],
-    folder: "Frontend",
-    starred: true,
-    favicon: "/react.png",
-  },
-  {
-    id: 6,
-    url: "https://framer.com/motion",
-    title: "Framer Motion - Animation Library",
-    description: "A production-ready motion library for React from Framer.",
-    tags: ["animation", "ui", "react"],
-    folder: "UI Libraries",
-    starred: false,
-    favicon: "/framer.png",
-  },
-];
-
 export default function HomePage() {
+  const [links, setLinks] = useState<Link[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredLinks = mockLinks.filter(
+  const filteredLinks = links.filter(
     (link) =>
       link.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       link.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -94,6 +29,26 @@ export default function HomePage() {
         tag.toLowerCase().includes(searchQuery.toLowerCase())
       )
   );
+
+  function handleAddLink(newLink: Omit<Link, "id" | "favicon" | "starred">) {
+    let favicon = "";
+    try {
+      const urlObj = new URL(newLink.url);
+      favicon = `https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=64`;
+    } catch {
+      favicon = "/default-favicon.png";
+    }
+    setLinks([
+      ...links,
+      {
+        ...newLink,
+        id: Date.now().toString(),
+        favicon,
+        starred: false,
+      },
+    ]);
+    setShowModal(false);
+  }
 
   return (
     <section className="pb-20">
@@ -103,7 +58,9 @@ export default function HomePage() {
             My Links
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            {filteredLinks.length} resources • Last updated today
+            {filteredLinks.length}{" "}
+            {filteredLinks.length === 1 ? "resource" : "resources"} • Last
+            updated today
           </p>
         </div>
         <button
@@ -124,12 +81,14 @@ export default function HomePage() {
 
       {filteredLinks.length === 0 ? (
         <div className="text-center py-20">
-          <div className="text-5xl mb-4">🔍</div>
+          <div className="text-6xl mb-4">📭</div>
           <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300">
-            No links found
+            No links yet
           </h3>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Try different search terms or add a new link
+            Click{" "}
+            <span className="font-semibold text-indigo-500">+ Add Link</span> to
+            save your first bookmark!
           </p>
         </div>
       ) : (
@@ -145,7 +104,12 @@ export default function HomePage() {
         </motion.div>
       )}
 
-      {showModal && <AddLinkModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <AddLinkModal
+          onClose={() => setShowModal(false)}
+          onAdd={handleAddLink}
+        />
+      )}
     </section>
   );
 }
