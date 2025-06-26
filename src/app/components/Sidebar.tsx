@@ -5,11 +5,10 @@ import {
   Home,
   Star,
   Plus,
-  ChevronRight,
+  ChevronLeft,
   Bookmark,
   Archive,
   Tag,
-  Menu,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -33,55 +32,41 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Floating toggle button when sidebar is collapsed */}
       <AnimatePresence>
         {isCollapsed && (
           <motion.button
-            className="fixed top-6 left-4 z-50 w-12 h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 flex items-center justify-center hover:scale-105 transition-transform"
+            className="fixed top-6 left-6 z-50 w-12 h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 flex items-center justify-center"
             onClick={() => setIsCollapsed(false)}
-            initial={{ opacity: 0, scale: 0.8, x: -20 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.8, x: -20 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.2 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            aria-label="Open sidebar"
           >
-            <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+            <div className="flex flex-col gap-1">
+              <div className="w-4 h-0.5 bg-gray-600 dark:bg-gray-300 rounded"></div>
+              <div className="w-4 h-0.5 bg-gray-600 dark:bg-gray-300 rounded"></div>
+              <div className="w-4 h-0.5 bg-gray-600 dark:bg-gray-300 rounded"></div>
+            </div>
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
       <motion.aside
-        className={clsx(
-          "fixed top-0 left-0 h-screen z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-800/50 flex flex-col transition-all duration-300",
-          isCollapsed ? "shadow-none" : "shadow-lg"
-        )}
+        className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-800/50 flex flex-col h-screen overflow-hidden"
         initial={false}
         animate={{
           width: isCollapsed ? 0 : 320,
-          x: isCollapsed ? -320 : 0,
         }}
         transition={{
-          type: "spring",
-          stiffness: 400,
-          damping: 40,
-          mass: 1,
-        }}
-        style={{
-          willChange: "transform, width",
-          minWidth: isCollapsed ? 0 : 320,
+          type: "tween",
+          duration: 0.3,
+          ease: [0.23, 1, 0.32, 1],
         }}
       >
-        <div
-          className={clsx(
-            "flex flex-col h-full",
-            isCollapsed && "overflow-hidden"
-          )}
-        >
-          {/* Header */}
-          <div className="p-6 border-b border-gray-200/50 dark:border-gray-800/50">
+        <div className="min-w-80 flex flex-col h-full">
+          <div className="p-6 border-b border-gray-200/50 dark:border-gray-800/50 flex-shrink-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -99,14 +84,12 @@ export default function Sidebar() {
               <button
                 onClick={() => setIsCollapsed(true)}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Collapse sidebar"
               >
-                <ChevronRight className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <ChevronLeft className="w-4 h-4 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
           </div>
 
-          {/* Navigation */}
           <div className="flex-1 p-4 space-y-2 overflow-y-auto">
             {navItems.map(({ icon: Icon, label, href, count }) => (
               <motion.a
@@ -132,7 +115,6 @@ export default function Sidebar() {
               </motion.a>
             ))}
 
-            {/* Folders Section */}
             <div className="pt-6">
               <div className="flex items-center justify-between px-4 mb-3">
                 <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -164,8 +146,7 @@ export default function Sidebar() {
             </div>
           </div>
 
-          {/* Bottom Actions */}
-          <div className="p-4 border-t border-gray-200/50 dark:border-gray-800/50">
+          <div className="p-4 border-t border-gray-200/50 dark:border-gray-800/50 flex-shrink-0">
             <motion.button
               className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-medium shadow-lg hover:shadow-xl transition-all"
               whileHover={{ scale: 1.02 }}
