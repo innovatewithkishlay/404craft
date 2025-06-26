@@ -38,6 +38,7 @@ export default function LinkCard({
           alt={`${title} favicon`}
           width={28}
           height={28}
+          unoptimized
           className="w-7 h-7 rounded shadow border border-zinc-200 dark:border-zinc-800 bg-white"
         />
         <a
