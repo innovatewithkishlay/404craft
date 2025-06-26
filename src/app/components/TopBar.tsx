@@ -8,14 +8,13 @@ export default function TopBar() {
   const [searchFocused, setSearchFocused] = useState(false);
 
   return (
-    <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 px-8 py-4">
+    <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 px-8 py-4 flex-shrink-0 z-30">
       <div className="flex items-center justify-between">
         <div className="flex-1 max-w-2xl">
-          <motion.div
+          <div
             className={`relative ${
               searchFocused ? "scale-105" : "scale-100"
             } transition-transform`}
-            layout
           >
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
@@ -25,7 +24,7 @@ export default function TopBar() {
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
             />
-          </motion.div>
+          </div>
         </div>
 
         <div className="flex items-center gap-3 ml-6">
