@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
-import AddLinkModal from "./components/AddLinkModal";
-import SearchFilterBar from "./components/SearchFilterBar";
-import LinkCard from "./components/LinkCard";
 import { motion } from "framer-motion";
+import { Plus, TrendingUp, Clock, Star } from "lucide-react";
+import LinkCard from "./components/LinkCard";
+import AddLinkModal from "./components/AddLinkModal";
+import StatsCard from "./components/StatsCard";
 
 export interface Link {
   id: string;
@@ -14,23 +15,37 @@ export interface Link {
   folder: string;
   starred: boolean;
   favicon: string;
+  addedAt: Date;
 }
 
 export default function HomePage() {
   const [links, setLinks] = useState<Link[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredLinks = links.filter(
-    (link) =>
-      link.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      link.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      link.tags.some((tag) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-  );
+  const stats = [
+    {
+      label: "Total Links",
+      value: links.length,
+      icon: TrendingUp,
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      label: "This Week",
+      value: 12,
+      icon: Clock,
+      color: "from-emerald-500 to-teal-500",
+    },
+    {
+      label: "Starred",
+      value: links.filter((l) => l.starred).length,
+      icon: Star,
+      color: "from-amber-500 to-orange-500",
+    },
+  ];
 
-  function handleAddLink(newLink: Omit<Link, "id" | "favicon" | "starred">) {
+  function handleAddLink(
+    newLink: Omit<Link, "id" | "favicon" | "starred" | "addedAt">
+  ) {
     let favicon = "";
     try {
       const urlObj = new URL(newLink.url);
@@ -38,68 +53,98 @@ export default function HomePage() {
     } catch {
       favicon = "/default-favicon.png";
     }
+
     setLinks([
-      ...links,
       {
         ...newLink,
         id: Date.now().toString(),
         favicon,
         starred: false,
+        addedAt: new Date(),
       },
+      ...links,
     ]);
     setShowModal(false);
   }
 
   return (
-    <section className="pb-20">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            My Links
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
-            {filteredLinks.length}{" "}
-            {filteredLinks.length === 1 ? "resource" : "resources"} • Last
-            updated today
-          </p>
+    <div className="space-y-8">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 dark:from-white dark:via-gray-100 dark:to-gray-300 bg-clip-text text-transparent">
+              Welcome back! 👋
+            </h1>
+            <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
+              Manage your digital resources beautifully
+            </p>
+          </div>
+          <motion.button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Plus className="w-5 h-5" />
+            Add Link
+          </motion.button>
         </div>
-        <button
-          className="px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all flex items-center gap-2 group"
-          onClick={() => setShowModal(true)}
+      </motion.div>
+
+      {/* Stats */}
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        {stats.map((stat, index) => (
+          <StatsCard key={stat.label} {...stat} delay={index * 0.1} />
+        ))}
+      </motion.div>
+
+      {/* Links Grid */}
+      {links.length === 0 ? (
+        <motion.div
+          className="text-center py-20"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <span>+ Add Link</span>
-          <span className="group-hover:translate-x-1 transition-transform">
-            →
-          </span>
-        </button>
-      </div>
-
-      <SearchFilterBar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
-
-      {filteredLinks.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="text-6xl mb-4">📭</div>
-          <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300">
-            No links yet
+          <div className="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/20 dark:to-purple-900/20 rounded-3xl flex items-center justify-center">
+            <div className="text-6xl">🚀</div>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-4">
+            Ready to organize your digital world?
           </h3>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Click{" "}
-            <span className="font-semibold text-indigo-500">+ Add Link</span> to
-            save your first bookmark!
+          <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
+            Start by adding your first link and watch your collection grow
+            beautifully
           </p>
-        </div>
+          <motion.button
+            onClick={() => setShowModal(true)}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Plus className="w-5 h-5" />
+            Add Your First Link
+          </motion.button>
+        </motion.div>
       ) : (
         <motion.div
-          className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {filteredLinks.map((link) => (
-            <LinkCard key={link.id} {...link} />
+          {links.map((link, index) => (
+            <LinkCard key={link.id} {...link} delay={index * 0.1} />
           ))}
         </motion.div>
       )}
@@ -110,6 +155,6 @@ export default function HomePage() {
           onAdd={handleAddLink}
         />
       )}
-    </section>
+    </div>
   );
 }
