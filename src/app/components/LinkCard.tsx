@@ -1,7 +1,18 @@
+import Image from "next/image";
 import { Star, Trash2 } from "lucide-react";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import TagChip from "./TagChip";
+
+interface LinkCardProps {
+  url: string;
+  title: string;
+  description: string;
+  tags: string[];
+  folder: string;
+  starred: boolean;
+  favicon: string;
+}
 
 export default function LinkCard({
   url,
@@ -11,7 +22,7 @@ export default function LinkCard({
   folder,
   starred,
   favicon,
-}: any) {
+}: LinkCardProps) {
   return (
     <motion.div
       className={clsx(
@@ -22,9 +33,11 @@ export default function LinkCard({
       transition={{ type: "spring", stiffness: 250, damping: 18 }}
     >
       <div className="flex items-center gap-3">
-        <img
+        <Image
           src={favicon}
-          alt=""
+          alt={`${title} favicon`}
+          width={28}
+          height={28}
           className="w-7 h-7 rounded shadow border border-zinc-200 dark:border-zinc-800 bg-white"
         />
         <a
@@ -41,13 +54,17 @@ export default function LinkCard({
               "p-1 rounded hover:bg-indigo-100 dark:hover:bg-indigo-800 transition",
               starred && "text-yellow-400"
             )}
+            aria-label={starred ? "Unstar link" : "Star link"}
           >
             <Star
               className="w-5 h-5"
               fill={starred ? "currentColor" : "none"}
             />
           </button>
-          <button className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900 transition">
+          <button
+            className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900 transition"
+            aria-label="Delete link"
+          >
             <Trash2 className="w-5 h-5 text-red-400" />
           </button>
         </span>
@@ -56,7 +73,7 @@ export default function LinkCard({
         {description}
       </div>
       <div className="flex items-center gap-2 flex-wrap">
-        {tags.map((tag: string) => (
+        {tags.map((tag) => (
           <TagChip key={tag} tag={tag} />
         ))}
         <span className="ml-auto text-xs px-2 py-1 rounded bg-indigo-100 dark:bg-indigo-800 text-indigo-700 dark:text-indigo-300">
