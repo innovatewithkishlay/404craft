@@ -56,7 +56,7 @@ export default function HomePage() {
     setLinks([
       {
         ...newLink,
-        id: Date.now().toString(),
+        id: `${Date.now()}-${Math.floor(Math.random() * 10000)}`,
         favicon,
         starred: false,
         addedAt: new Date(),
