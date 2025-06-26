@@ -6,7 +6,7 @@ import type { Link } from "../page";
 
 interface Props {
   onClose: () => void;
-  onAdd: (link: Omit<Link, "id" | "favicon" | "starred">) => void;
+  onAdd: (link: Omit<Link, "id" | "favicon" | "starred" | "addedAt">) => void;
 }
 
 export default function AddLinkModal({ onClose, onAdd }: Props) {
