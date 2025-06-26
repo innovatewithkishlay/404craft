@@ -1,19 +1,27 @@
-import TagChip from "./TagChip";
-import FolderDropdown from "./FolderDropdown";
+import { Search } from "lucide-react";
+import { Dispatch, SetStateAction } from "react";
 
-export default function SearchFilterBar() {
+interface SearchFilterBarProps {
+  searchQuery: string;
+  setSearchQuery: Dispatch<SetStateAction<string>>;
+}
+
+export default function SearchFilterBar({
+  searchQuery,
+  setSearchQuery,
+}: SearchFilterBarProps) {
   return (
-    <div className="flex flex-col md:flex-row gap-3 items-center mb-6">
+    <div className="relative">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+        <Search className="w-5 h-5 text-gray-400" />
+      </div>
       <input
         type="text"
-        placeholder="Search links..."
-        className="px-4 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-full md:w-1/2"
+        placeholder="Search links, tags, or folders..."
+        className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent shadow-sm"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
       />
-      <div className="flex gap-2 flex-wrap">
-        <TagChip tag="react" />
-        <TagChip tag="nextjs" />
-      </div>
-      <FolderDropdown />
     </div>
   );
 }
