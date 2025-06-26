@@ -110,9 +110,6 @@ export default function HomePage() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <div className="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/20 dark:to-purple-900/20 rounded-3xl flex items-center justify-center">
-            <div className="text-6xl">🚀</div>
-          </div>
           <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-4">
             Ready to organize your digital world?
           </h3>
