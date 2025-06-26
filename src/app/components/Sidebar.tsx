@@ -1,39 +1,182 @@
-import { Home, Star, Folder, Settings } from "lucide-react";
+"use client";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Home,
+  Star,
+  Folder,
+  Settings,
+  Plus,
+  ChevronRight,
+  Bookmark,
+  Archive,
+  Tag,
+} from "lucide-react";
 import clsx from "clsx";
 
 const navItems = [
-  { icon: Home, label: "Home", href: "/" },
-  { icon: Star, label: "Starred", href: "/starred" },
-  { icon: Folder, label: "Folders", href: "/folders" },
-  { icon: Settings, label: "Settings", href: "/settings" },
+  { icon: Home, label: "Dashboard", href: "/", count: null },
+  { icon: Bookmark, label: "All Links", href: "/links", count: 42 },
+  { icon: Star, label: "Starred", href: "/starred", count: 8 },
+  { icon: Archive, label: "Archive", href: "/archive", count: 12 },
+  { icon: Tag, label: "Tags", href: "/tags", count: null },
+];
+
+const folders = [
+  { name: "Design", count: 15, color: "bg-purple-500" },
+  { name: "Development", count: 28, color: "bg-blue-500" },
+  { name: "Inspiration", count: 9, color: "bg-emerald-500" },
+  { name: "Learning", count: 6, color: "bg-orange-500" },
 ];
 
 export default function Sidebar() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   return (
-    <aside className="h-screen w-16 md:w-56 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl border-r border-zinc-200 dark:border-zinc-800 shadow-lg flex flex-col items-center py-6 gap-8 fixed md:static z-20">
-      <div className="mb-8 flex items-center justify-center w-full">
-        <span className="font-bold text-xl text-indigo-600 dark:text-indigo-300">
-          🔗
-        </span>
+    <motion.aside
+      className={clsx(
+        "bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-800/50 flex flex-col transition-all duration-300",
+        isCollapsed ? "w-20" : "w-80"
+      )}
+      initial={{ x: -100, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="p-6 border-b border-gray-200/50 dark:border-gray-800/50">
+        <div className="flex items-center justify-between">
+          <motion.div className="flex items-center gap-3" layout>
+            <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <Bookmark className="w-5 h-5 text-white" />
+            </div>
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                    LinkVault
+                  </h1>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Premium Edition
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <ChevronRight
+              className={clsx(
+                "w-4 h-4 transition-transform",
+                isCollapsed ? "rotate-0" : "rotate-180"
+              )}
+            />
+          </button>
+        </div>
       </div>
-      <nav className="flex flex-col gap-6 w-full items-center md:items-start">
-        {navItems.map(({ icon: Icon, label, href }) => (
-          <a
+
+      <div className="flex-1 p-4 space-y-2">
+        {navItems.map(({ icon: Icon, label, href, count }) => (
+          <motion.a
             key={label}
             href={href}
-            className={clsx(
-              "flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-800 transition group",
-              "w-12 md:w-full justify-center md:justify-start"
-            )}
-            aria-label={label}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all group"
+            whileHover={{ x: 4 }}
+            whileTap={{ scale: 0.98 }}
           >
-            <Icon className="w-6 h-6 text-zinc-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-300" />
-            <span className="hidden md:inline text-zinc-700 dark:text-zinc-200 font-medium">
-              {label}
-            </span>
-          </a>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center group-hover:from-violet-100 group-hover:to-purple-100 dark:group-hover:from-violet-900/50 dark:group-hover:to-purple-900/50 transition-all">
+              <Icon className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:text-violet-600 dark:group-hover:text-violet-400" />
+            </div>
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.div
+                  className="flex-1 flex items-center justify-between"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                >
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    {label}
+                  </span>
+                  {count && (
+                    <span className="px-2 py-1 text-xs font-medium bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
+                      {count}
+                    </span>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.a>
         ))}
-      </nav>
-    </aside>
+
+        <AnimatePresence>
+          {!isCollapsed && (
+            <motion.div
+              className="pt-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div className="flex items-center justify-between px-4 mb-3">
+                <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Folders
+                </h3>
+                <button className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                  <Plus className="w-4 h-4 text-gray-400" />
+                </button>
+              </div>
+              <div className="space-y-1">
+                {folders.map((folder) => (
+                  <motion.div
+                    key={folder.name}
+                    className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer transition-all"
+                    whileHover={{ x: 4 }}
+                  >
+                    <div
+                      className={clsx("w-3 h-3 rounded-full", folder.color)}
+                    />
+                    <span className="flex-1 text-sm text-gray-600 dark:text-gray-400">
+                      {folder.name}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {folder.count}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="p-4 border-t border-gray-200/50 dark:border-gray-800/50">
+        <motion.button
+          className={clsx(
+            "w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-medium shadow-lg hover:shadow-xl transition-all",
+            isCollapsed ? "justify-center" : "justify-start"
+          )}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <Plus className="w-5 h-5" />
+          <AnimatePresence>
+            {!isCollapsed && (
+              <motion.span
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+              >
+                Add Link
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.button>
+      </div>
+    </motion.aside>
   );
 }
