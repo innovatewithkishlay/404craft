@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, TrendingUp, Clock, Star } from "lucide-react";
 import LinkCard from "./components/LinkCard";
 import AddLinkModal from "./components/AddLinkModal";
+import { Plus, TrendingUp, Clock, Star } from "lucide-react";
 import StatsCard from "./components/StatsCard";
 
 export interface Link {
@@ -53,7 +53,6 @@ export default function HomePage() {
     } catch {
       favicon = "/default-favicon.png";
     }
-
     setLinks([
       {
         ...newLink,
@@ -69,7 +68,6 @@ export default function HomePage() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -95,8 +93,6 @@ export default function HomePage() {
           </motion.button>
         </div>
       </motion.div>
-
-      {/* Stats */}
       <motion.div
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
         initial={{ opacity: 0, y: 20 }}
@@ -107,8 +103,6 @@ export default function HomePage() {
           <StatsCard key={stat.label} {...stat} delay={index * 0.1} />
         ))}
       </motion.div>
-
-      {/* Links Grid */}
       {links.length === 0 ? (
         <motion.div
           className="text-center py-20"
@@ -148,7 +142,6 @@ export default function HomePage() {
           ))}
         </motion.div>
       )}
-
       {showModal && (
         <AddLinkModal
           onClose={() => setShowModal(false)}
