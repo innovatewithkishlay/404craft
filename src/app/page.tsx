@@ -5,7 +5,18 @@ import SearchFilterBar from "./components/SearchFilterBar";
 import LinkCard from "./components/LinkCard";
 import { motion } from "framer-motion";
 
-const mockLinks = [
+interface Link {
+  id: number;
+  url: string;
+  title: string;
+  description: string;
+  tags: string[];
+  folder: string;
+  starred: boolean;
+  favicon: string;
+}
+
+const mockLinks: Link[] = [
   {
     id: 1,
     url: "https://github.com/vercel/next.js",
