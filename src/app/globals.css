@@ -1,0 +1,22 @@
+@import "tailwindcss/preflight";
+@tailwind utilities;
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-dark: rgba(24, 24, 27, 0.7);
+  --border-glass: rgba(200, 200, 200, 0.2);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  --primary: #6366f1;
+  --accent: #a5b4fc;
+  --radius: 1.25rem;
+  --font-main: "Inter", system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-main);
+  background: linear-gradient(135deg, #f8fafc, #e0e7ff 70%);
+}
+
+.dark body {
+  background: linear-gradient(135deg, #18181b, #312e81 70%);
+}
